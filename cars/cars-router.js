@@ -30,4 +30,40 @@ router.post('/', (req, res) => {
     });
 });
 
+router.put('/:id', (req, res) => {
+  const { id } = req.params;
+  const changes = req.body;
+
+  db('cars')
+    .where({ id })
+    .update(changes)
+    .then((count) => {
+      if (count) {
+        res.json({ update: count });
+      } else {
+        res.status(404).json({ message: 'Could not find car' });
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({ message: 'Failed to update car data', err });
+    });
+});
+
+router.delete('/:id', (req, res) => {
+  const { id } = req.params;
+  db('cars')
+    .where({ id })
+    .del()
+    .then((count) => {
+      if (count) {
+        res.json({ removed: count });
+      } else {
+        res.status(404).json('Could not find car');
+      }
+    })
+    .catch((err) => {
+      res.status(500).json('Failed to delete car data');
+    });
+});
+
 module.exports = router;
